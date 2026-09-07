@@ -6,7 +6,7 @@
 // significa que só quem tem as credenciais do servidor consegue criar
 // uma conta administrativa.
 import { db } from '../lib/db';
-import { hashPassword } from '../lib/auth';
+import { hashPassword } from '../lib/password';
 
 async function main() {
   const [email, password] = process.argv.slice(2);

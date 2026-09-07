@@ -84,8 +84,9 @@ export async function extractProductFromUrl(rawUrl: string): Promise<ExtractedPr
   // Tentativa best-effort de achar um preço em R$ no HTML estático.
   // Não confie cegamente nisso — sempre deixe o admin conferir.
   const priceMatch = html.match(/R\$\s*([\d.,]+)/);
-  const price = priceMatch
-    ? parseFloat(priceMatch[1].replace(/\./g, '').replace(',', '.'))
+  const priceGroup = priceMatch?.[1];
+  const price = priceGroup
+    ? parseFloat(priceGroup.replace(/\./g, '').replace(',', '.'))
     : null;
 
   return {

@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { db } from '@/lib/db';
+import { verifyPassword } from '@/lib/password';
 import {
-  verifyPassword,
   createSessionToken,
   SESSION_COOKIE_NAME,
   SESSION_COOKIE_OPTIONS,
-} from '@/lib/auth';
+} from '@/lib/session';
 import { rateLimit } from '@/lib/rateLimit';
+
+export const runtime = 'nodejs'; // bcrypt precisa do Node.js runtime, não do Edge
 
 const LoginSchema = z.object({
   email: z.string().email().max(255),
