@@ -1,0 +1,55 @@
+// Banco recomendado: Postgres (Supabase free tier funciona bem com Vercel).
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  lastLoginAt  DateTime?
+  failedLoginAttempts Int @default(0)
+  lockedUntil  DateTime?
+}
+
+model Product {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title          String
+  description    String?
+  priceCents     Int
+  originalUrl    String   // link original do produto na Shopee
+  affiliateUrl   String   // link de afiliado gerado/colado
+  imageUrl       String
+  category       String   @default("geral")
+  accentColor    String   @default("#ff5722") // cor dominante extraída da imagem
+  accentColorDark String  @default("#c41e1e")
+  published      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  clicks         ClickLog[]
+
+  @@index([published, createdAt])
+  @@index([category])
+}
+
+// Log de cliques no link de afiliado — útil para saber o que converte
+// e também funciona como camada extra: o clique nunca expõe o link cru
+// no HTML, só o ID do produto (ver /api/go/[id]).
+model ClickLog {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  // Nunca guardamos IP completo/PII do visitante, só um hash truncado
+  // para deduplicar cliques repetidos sem virar dado pessoal identificável.
+  visitorHash String?
+
+  @@index([productId, createdAt])
+}

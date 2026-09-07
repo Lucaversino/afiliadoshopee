@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.perspective-1200 {
+  perspective: 1200px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+/* Foco visível para navegação por teclado — nunca remova o outline sem
+   substituir por algo igualmente visível. */
+:focus-visible {
+  outline: 3px solid var(--accent, #ff5722);
+  outline-offset: 2px;
+}
